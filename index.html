@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍎 Fruit Slot Machine 🍎</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: linear-gradient(135deg, #fff9e6 0%, #ffe6f0 100%);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #d63031;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #636e72;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .balance-section {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 3px solid #fdcb6e;
+        }
+
+        .balance-label {
+            font-size: 0.9em;
+            color: #636e72;
+            margin-bottom: 8px;
+        }
+
+        .balance {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #00b894;
+        }
+
+        .slot-machine {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .reels {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .reel {
+            width: 100px;
+            height: 120px;
+            background: white;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            font-weight: bold;
+            border: 4px solid #fdcb6e;
+            box-shadow: inset 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.1s ease;
+        }
+
+        .reel.spinning {
+            animation: spin 0.05s linear;
+        }
+
+        @keyframes spin {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 35px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .spin-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 18px 50px;
+            font-size: 1.3em;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .spin-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .spin-btn:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .spin-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(79, 172, 254, 0.4);
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+            min-height: 30px;
+        }
+
+        .win {
+            color: #00b894;
+            animation: bounce 0.6s ease;
+        }
+
+        .lose {
+            color: #d63031;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .rules {
+            background: rgba(255, 255, 255, 0.6);
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #636e72;
+            text-align: left;
+        }
+
+        .rules h3 {
+            color: #d63031;
+            margin-bottom: 10px;
+        }
+
+        .rules ul {
+            margin-left: 20px;
+            line-height: 1.6;
+        }
+
+        .coin-bet {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .bet-btn {
+            padding: 10px 20px;
+            background: #dfe6e9;
+            color: #2d3436;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .bet-btn.active {
+            background: #fdcb6e;
+            color: #2d3436;
+        }
+
+        .bet-btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍎 Fruit Slot Machine 🍎</h1>
+        <p class="subtitle">หมุนลูกเหลี่ยมแล้วรอรางวัล!</p>
+
+        <div class="balance-section">
+            <div class="balance-label">💰 Your Coins</div>
+            <div class="balance" id="balance">100</div>
+        </div>
+
+        <div class="slot-machine">
+            <div style="margin-bottom: 20px;">
+                <label style="color: white; font-weight: bold; margin-right: 10px;">Bet per spin:</label>
+                <div class="coin-bet">
+                    <button class="bet-btn active" onclick="setBet(1)">1 🪙</button>
+                    <button class="bet-btn" onclick="setBet(5)">5 🪙</button>
+                    <button class="bet-btn" onclick="setBet(10)">10 🪙</button>
+                    <button class="bet-btn" onclick="setBet(25)">25 🪙</button>
+                </div>
+            </div>
+
+            <div class="reels">
+                <div class="reel" id="reel1">🍎</div>
+                <div class="reel" id="reel2">🍌</div>
+                <div class="reel" id="reel3">🍒</div>
+            </div>
+
+            <div class="controls">
+                <button class="spin-btn" id="spinBtn" onclick="spin()">🎰 SPIN 🎰</button>
+                <button class="reset-btn" onclick="resetGame()">Reset</button>
+            </div>
+
+            <div class="message" id="message"></div>
+        </div>
+
+        <div class="rules">
+            <h3>🎯 Rules:</h3>
+            <ul>
+                <li>🍎 Three same fruits = WIN! Get 10x your bet</li>
+                <li>🍌 Two same fruits = 2x your bet back</li>
+                <li>🍒 No match = Lose your bet</li>
+                <li>💰 Start with 100 coins</li>
+                <li>🎲 Choose your bet and spin!</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const fruits = ['🍎', '🍌', '🍒', '🍊', '🍉', '🍓', '🥝', '🍑'];
+        let balance = 100;
+        let currentBet = 1;
+        let isSpinning = false;
+
+        const reel1 = document.getElementById('reel1');
+        const reel2 = document.getElementById('reel2');
+        const reel3 = document.getElementById('reel3');
+        const spinBtn = document.getElementById('spinBtn');
+        const messageDiv = document.getElementById('message');
+        const balanceDiv = document.getElementById('balance');
+
+        function setBet(amount) {
+            if (!isSpinning) {
+                currentBet = amount;
+                document.querySelectorAll('.bet-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                event.target.classList.add('active');
+            }
+        }
+
+        function getRandomFruit() {
+            return fruits[Math.floor(Math.random() * fruits.length)];
+        }
+
+        function updateBalance() {
+            balanceDiv.textContent = balance;
+        }
+
+        function spin() {
+            if (isSpinning || balance < currentBet) {
+                if (balance < currentBet) {
+                    messageDiv.textContent = '❌ Not enough coins!';
+                    messageDiv.className = 'message lose';
+                }
+                return;
+            }
+
+            // Deduct bet
+            balance -= currentBet;
+            updateBalance();
+
+            isSpinning = true;
+            spinBtn.disabled = true;
+            messageDiv.textContent = '';
+
+            // Add spinning animation
+            reel1.classList.add('spinning');
+            reel2.classList.add('spinning');
+            reel3.classList.add('spinning');
+
+            // Spin duration
+            let spinCount = 0;
+            const spinInterval = setInterval(() => {
+                reel1.textContent = getRandomFruit();
+                reel2.textContent = getRandomFruit();
+                reel3.textContent = getRandomFruit();
+                spinCount++;
+
+                if (spinCount > 20) {
+                    clearInterval(spinInterval);
+                    
+                    // Get final results
+                    const result1 = getRandomFruit();
+                    const result2 = getRandomFruit();
+                    const result3 = getRandomFruit();
+
+                    reel1.textContent = result1;
+                    reel2.textContent = result2;
+                    reel3.textContent = result3;
+
+                    reel1.classList.remove('spinning');
+                    reel2.classList.remove('spinning');
+                    reel3.classList.remove('spinning');
+
+                    // Check win condition
+                    checkWin(result1, result2, result3);
+
+                    isSpinning = false;
+                    spinBtn.disabled = false;
+
+                    if (balance === 0) {
+                        messageDiv.textContent = '💸 Game Over! Coins finished!';
+                        messageDiv.className = 'message lose';
+                        spinBtn.disabled = true;
+                    }
+                }
+            }, 50);
+        }
+
+        function checkWin(r1, r2, r3) {
+            let winAmount = 0;
+
+            if (r1 === r2 && r2 === r3) {
+                // Three of a kind - jackpot!
+                winAmount = currentBet * 10;
+                messageDiv.textContent = `🎉 JACKPOT! You won ${winAmount} coins! 🎉`;
+                messageDiv.className = 'message win';
+            } else if (r1 === r2 || r2 === r3 || r1 === r3) {
+                // Two of a kind
+                winAmount = currentBet * 2;
+                messageDiv.textContent = `✨ Two match! You won ${winAmount} coins! ✨`;
+                messageDiv.className = 'message win';
+            } else {
+                // No match
+                messageDiv.textContent = `😢 No match. Try again!`;
+                messageDiv.className = 'message lose';
+            }
+
+            balance += winAmount;
+            updateBalance();
+        }
+
+        function resetGame() {
+            balance = 100;
+            currentBet = 1;
+            isSpinning = false;
+            spinBtn.disabled = false;
+            messageDiv.textContent = '';
+            reel1.textContent = '🍎';
+            reel2.textContent = '🍌';
+            reel3.textContent = '🍒';
+            updateBalance();
+            document.querySelectorAll('.bet-btn')[0].classList.add('active');
+            document.querySelectorAll('.bet-btn').forEach((btn, idx) => {
+                if (idx !== 0) btn.classList.remove('active');
+            });
+        }
+
+        // Initialize
+        updateBalance();
+    </script>
+</body>
+</html>
